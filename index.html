@@ -43,6 +43,7 @@
         button {
             display: block;
             width: 100%;
+            background-color: #4d4c4c;
             padding: 10px;
             box-sizing: border-box;
             font-family: 'Space Grotesk', sans-serif;
@@ -52,7 +53,7 @@
         #countdown {
             font-size: 20px;
             font-weight: bold;
-            text-align: center;
+            text-align: left;
             margin-bottom: 20px;
         }
     </style>
@@ -112,7 +113,11 @@
             copyText.select();
             copyText.setSelectionRange(0, 99999); // For mobile devices
             document.execCommand("copy");
+        
+            var copyButton = document.querySelector(`button[onclick="copyToClipboard('${elementId}')"]`);
+            copyButton.innerHTML = '✓';
         }
+
 
         // 1-hour countdown timer
         var countDownDate = new Date().getTime() + 60 * 60 * 1000;
