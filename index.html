@@ -44,10 +44,12 @@
             display: block;
             width: 100%;
             background-color: #4d4c4c;
+            color: #ffffff;
             padding: 10px;
+            border-radius: 10px;
             box-sizing: border-box;
             font-family: 'Space Grotesk', sans-serif;
-            margin: 10px 0;
+            margin: 5px 0;
         }
 
         #countdown {
@@ -61,11 +63,11 @@
 <body>
     <div id="countdown"></div>
 
-    <form action="https://script.google.com/macros/s/AKfycbyALcX9piRnqVF-TAPxjS_kstscBom6AYBMjhYDJo9repLJOaI/exec" method="POST">
+    <form id="myForm">
         <div class="input-field">
-            <label for="user-personality">User Personality:</label>
-            <textarea name="user-personality" id="user-personality" required></textarea>
-            <button type="button" onclick="copyToClipboard('user-personality')">Copy</button>
+            <label for="userPersonality">User Personality:</label>
+            <textarea name="userPersonality" id="userPersonality" required></textarea>
+            <button type="button" onclick="copyToClipboard('userPersonality')">Copy</button>
         </div>
         <div class="input-field">
             <label for="objective">Objective:</label>
@@ -74,37 +76,53 @@
         </div>
         <div class="input-field">
             <label for="backstory">Backstory:</label>
-            <textarea name="backstory" id="backstory" required></textarea>
+            <textarea name="backstory" id="backstory"></textarea>
             <button type="button" onclick="copyToClipboard('backstory')">Copy</button>
         </div>
 
         <div id="turns-container"></div>
 
         <button id="add-turn-button" type="button">Add Turn</button>
-        <button type="submit">Submit</button>
+        <button type="button" id="submit-button">Submit</button>
     </form>
 
     <script>
+        document.getElementById('submit-button').addEventListener('click', function(e) {
+        e.preventDefault();
+
+        // Transform form data into a JSON object
+        var formData = new FormData(document.getElementById('myForm'));
+        var jsonObject = {};
+        for (const [key, value] of formData.entries()) {
+            jsonObject[key] = value;
+        }
+
+        // Post the JSON object to the Google Apps Script
+        var xhr = new XMLHttpRequest();
+        xhr.open('POST', 'https://script.google.com/macros/s/AKfycbylY2cLJtaJlU2jjBPB82Qqj4qds9vFPC5RY4h9hP-XmTZRyzrPr0SYpvPsp-Hj_PhI/exec');
+        xhr.setRequestHeader('Content-Type', 'application/json');
+        xhr.send(JSON.stringify(jsonObject));
+    });
         document.getElementById('add-turn-button').addEventListener('click', function() {
             let turnCounter = document.querySelectorAll('.input-field').length - 3;
-
+        
             var turnHTML = document.createElement('div');
             turnHTML.classList.add('input-field');
             turnHTML.innerHTML = `
-                <label for="user-turn${turnCounter + 1}">Turn ${turnCounter + 1} - User:</label>
-                <textarea name="user-turn${turnCounter + 1}" id="user-turn${turnCounter + 1}" required></textarea>
-                <button type="button" onclick="copyToClipboard('user-turn${turnCounter + 1}')">Copy</button>
-                <label for="bot-turn${turnCounter + 1}">Bot:</label>
-                <textarea name="bot-turn${turnCounter + 1}" id="bot-turn${turnCounter + 1}" required></textarea>
-                <button type="button" onclick="copyToClipboard('bot-turn${turnCounter + 1}')">Copy</button>
-                <label for="source-link${turnCounter + 1}">Source Link:</label>
-                <input type="text" name="source-link${turnCounter + 1}" id="source-link${turnCounter + 1}" required>
-                <button type="button" onclick="copyToClipboard('source-link${turnCounter + 1}')">Copy</button>
-                <label for="source-research${turnCounter + 1}">Source Research:</label>
-                <textarea name="source-research${turnCounter + 1}" id="source-research${turnCounter + 1}" required></textarea>
-                <button type="button" onclick="copyToClipboard('source-research${turnCounter + 1}')">Copy</button>
+                <label for="userTurn${turnCounter + 1}">Turn ${turnCounter + 1} - User:</label>
+                <textarea name="userTurn${turnCounter + 1}" id="userTurn${turnCounter + 1}" required></textarea>
+                <button type="button" onclick="copyToClipboard('userTurn${turnCounter + 1}')">Copy</button>
+                <label for="botTurn${turnCounter + 1}">Bot:</label>
+                <textarea name="botTurn${turnCounter + 1}" id="botTurn${turnCounter + 1}" required></textarea>
+                <button type="button" onclick="copyToClipboard('botTurn${turnCounter + 1}')">Copy</button>
+                <label for="sourceLink${turnCounter + 1}">Source Link:</label>
+                <input type="text" name="sourceLink${turnCounter + 1}" id="sourceLink${turnCounter + 1}" required>
+                <button type="button" onclick="copyToClipboard('sourceLink${turnCounter + 1}')">Copy</button>
+                <label for="sourceResearch${turnCounter + 1}">Source Research:</label>
+                <textarea name="sourceResearch${turnCounter + 1}" id="sourceResearch${turnCounter + 1}" required></textarea>
+                <button type="button" onclick="copyToClipboard('sourceResearch${turnCounter + 1}')">Copy</button>
             `;
-
+        
             document.getElementById('turns-container').appendChild(turnHTML);
         });
 
